@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 class instruction_set
 {
 	private:
@@ -9,8 +11,6 @@ class instruction_set
 		char code[MCS];
 		u_int32_t codesize;
 	public:
-        u_int32_t next(u_int32_t op1, const char type);
-        u_int32_t back(u_int32_t op2, const char type);
 		u_int32_t jump(u_int32_t op1, const char type);
 		u_int32_t jumpzero(u_int32_t op1, const char type);
 		u_int32_t compare(u_int32_t op1, u_int32_t op2, const char type);
@@ -102,32 +102,6 @@ u_int32_t instruction_set::getoperand2value(u_int32_t op2, const char type)
     return temp;
 }
 
-u_int32_t instruction_set::next(u_int32_t op1, const char type)
-{
-    if ((type & 0xC0) == 0xC0 && (op1 == 9 || op1 == 10))
-    {
-        if (p[op1 - 8] == MMS - 1)
-            p[op1 - 8] = 0;
-        else
-            p[op1 - 8]++;
-        return 0;
-    }
-    else
-        return 14;
-}
-u_int32_t instruction_set::back(u_int32_t op1, const char type)
-{
-    if ((type & 0xC0) == 0xC0 && (op1 == 9 || op1 == 10))
-    {
-        if (p[op1 - 8] == 0)
-            p[op1 - 8] = MMS - 1;
-        else
-            p[op1 - 8]--;
-        return 0;
-    }
-    else
-        return 14;
-}
 u_int32_t instruction_set::jump(u_int32_t op1, const char type)
 {
     if ((type & 0x0C) == 0x00)
@@ -164,7 +138,6 @@ u_int32_t instruction_set::compare(u_int32_t op1, u_int32_t op2, const char type
         flags &= 0xFFFFFFFE;
 	return 0;
 }
-
 u_int32_t instruction_set::increase(u_int32_t op1, const char type)
 {
     if ((type & 0xC0) == 0x00)
@@ -424,12 +397,6 @@ u_int32_t instruction_set::execute(u_int32_t ins)
 
 	switch (code[ins * 10 + 1])
 	{
-        case 11:
-            next(operand1, prefix);
-            break;
-        case 12:
-            back(operand1, prefix);
-            break;
 		case 16:
 			jump(operand1, prefix);
 			break;
