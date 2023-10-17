@@ -1,4 +1,4 @@
-class Instruction
+class instruction_set
 {
 	private:
 		u_int32_t stack[MMS];
@@ -26,13 +26,13 @@ class Instruction
 		u_int32_t logic_not(u_int32_t op1, const char type);
 		u_int32_t logic_xor(u_int32_t op1, u_int32_t op2, const char type);
 		u_int32_t logic_or(u_int32_t op1, u_int32_t op2, const char type);
-		Instruction(void);
+		instruction_set(void);
 		u_int32_t loadcode(char* codefile);
 		u_int32_t execute(u_int32_t ins);
         u_int32_t getoperand2value(u_int32_t op2, const char type);
         u_int32_t getoperand1value(u_int32_t op2, const char type);
 };
-Instruction::Instruction(void)
+instruction_set::instruction_set(void)
 {
 	fill(stack, stack + MSS, 0);
 	fill(main_memory, main_memory + MMS, 0);
@@ -40,12 +40,12 @@ Instruction::Instruction(void)
 	sp = 0;
 	flags = 0;
 }
-u_int32_t Instruction::loadcode(char* codefile)
+u_int32_t instruction_set::loadcode(char* codefile)
 {
 	codesize = readcode(code, codefile, MCS);
     return codesize;
 }
-u_int32_t Instruction::getoperand1value(u_int32_t op1, const char type)
+u_int32_t instruction_set::getoperand1value(u_int32_t op1, const char type)
 {
     u_int32_t temp;
     if ((type & 0xC0) == 0x00)
@@ -73,7 +73,7 @@ u_int32_t Instruction::getoperand1value(u_int32_t op1, const char type)
     }
     return temp;
 }
-u_int32_t Instruction::getoperand2value(u_int32_t op2, const char type)
+u_int32_t instruction_set::getoperand2value(u_int32_t op2, const char type)
 {
     u_int32_t temp;
     if ((type & 0x30) == 0x00)
@@ -102,7 +102,7 @@ u_int32_t Instruction::getoperand2value(u_int32_t op2, const char type)
     return temp;
 }
 
-u_int32_t Instruction::next(u_int32_t op1, const char type)
+u_int32_t instruction_set::next(u_int32_t op1, const char type)
 {
     if ((type & 0xC0) == 0xC0 && (op1 == 9 || op1 == 10))
     {
@@ -115,7 +115,7 @@ u_int32_t Instruction::next(u_int32_t op1, const char type)
     else
         return 14;
 }
-u_int32_t Instruction::back(u_int32_t op1, const char type)
+u_int32_t instruction_set::back(u_int32_t op1, const char type)
 {
     if ((type & 0xC0) == 0xC0 && (op1 == 9 || op1 == 10))
     {
@@ -128,7 +128,7 @@ u_int32_t Instruction::back(u_int32_t op1, const char type)
     else
         return 14;
 }
-u_int32_t Instruction::jump(u_int32_t op1, const char type)
+u_int32_t instruction_set::jump(u_int32_t op1, const char type)
 {
     if ((type & 0x0C) == 0x00)
         return 0;
@@ -144,13 +144,13 @@ u_int32_t Instruction::jump(u_int32_t op1, const char type)
         return 14;
 	return 0;
 }
-u_int32_t Instruction::jumpzero(u_int32_t op1, const char type)
+u_int32_t instruction_set::jumpzero(u_int32_t op1, const char type)
 {
     if (((type & 0x03) ^ (flags & 0x03)) == 0)
         return jump(op1, type);
 	return 0;
 }
-u_int32_t Instruction::compare(u_int32_t op1, u_int32_t op2, const char type)
+u_int32_t instruction_set::compare(u_int32_t op1, u_int32_t op2, const char type)
 {
     op1 = getoperand1value(op1, type);
     op2 = getoperand2value(op2, type);
@@ -165,7 +165,7 @@ u_int32_t Instruction::compare(u_int32_t op1, u_int32_t op2, const char type)
 	return 0;
 }
 
-u_int32_t Instruction::increase(u_int32_t op1, const char type)
+u_int32_t instruction_set::increase(u_int32_t op1, const char type)
 {
     if ((type & 0xC0) == 0x00)
         return 0;
@@ -190,10 +190,10 @@ u_int32_t Instruction::increase(u_int32_t op1, const char type)
         else
             return 14;
     }
-    cout << "Instruction::increase(" << main_memory[op1] << ")" << endl;
+    cout << "instruction_set::increase(" << main_memory[op1] << ")" << endl;
     return 0;
 }
-u_int32_t Instruction::decrease(u_int32_t op1, const char type)
+u_int32_t instruction_set::decrease(u_int32_t op1, const char type)
 {
     if ((type & 0xC0) == 0x00)
           return 0;
@@ -220,10 +220,10 @@ u_int32_t Instruction::decrease(u_int32_t op1, const char type)
         else
             return 14;
     }
-    cout << "Instruction::decrease(" << main_memory[op1] << ")" << endl;
+    cout << "instruction_set::decrease(" << main_memory[op1] << ")" << endl;
 	return 0;
 }
-u_int32_t Instruction::input(u_int32_t op1, const char type)
+u_int32_t instruction_set::input(u_int32_t op1, const char type)
 {
     if ((type & 0xC0) == 0x00)
         return 0;
@@ -245,10 +245,10 @@ u_int32_t Instruction::input(u_int32_t op1, const char type)
         else
             return 14;
     }
-    cout << "Instruction::input" << endl;
+    cout << "instruction_set::input" << endl;
     return 0;
 }
-u_int32_t Instruction::output(u_int32_t op1, const char type)
+u_int32_t instruction_set::output(u_int32_t op1, const char type)
 {
     if ((type & 0xC0) == 0x00)
         return 0;
@@ -270,18 +270,18 @@ u_int32_t Instruction::output(u_int32_t op1, const char type)
         else
             return 14;
     }
-    cout << "Instruction::output" << endl;
+    cout << "instruction_set::output" << endl;
     return 0;
 }
-u_int32_t Instruction::read(u_int32_t op1, u_int32_t op2)
+u_int32_t instruction_set::read(u_int32_t op1, u_int32_t op2)
 {
 	return 0;
 }
-u_int32_t Instruction::write(u_int32_t op1, u_int32_t op2)
+u_int32_t instruction_set::write(u_int32_t op1, u_int32_t op2)
 {
 	return 0;
 }
-u_int32_t Instruction::move(u_int32_t op1, u_int32_t op2, const char type)
+u_int32_t instruction_set::move(u_int32_t op1, u_int32_t op2, const char type)
 {
     u_int32_t temp = getoperand2value(op2, type);
 
@@ -310,11 +310,11 @@ u_int32_t Instruction::move(u_int32_t op1, u_int32_t op2, const char type)
     }
 	return 0;
 }
-u_int32_t Instruction::swap(u_int32_t op1, u_int32_t op2)
+u_int32_t instruction_set::swap(u_int32_t op1, u_int32_t op2)
 {
 	return 0;
 }
-u_int32_t Instruction::logic_and(u_int32_t op1, u_int32_t op2, const char type)
+u_int32_t instruction_set::logic_and(u_int32_t op1, u_int32_t op2, const char type)
 {
     u_int32_t temp = getoperand2value(op2, type);
     if ((type & 0xC0) == 0x00)
@@ -339,7 +339,7 @@ u_int32_t Instruction::logic_and(u_int32_t op1, u_int32_t op2, const char type)
     }
 	return 0;
 }
-u_int32_t Instruction::logic_not(u_int32_t op1, const char type)
+u_int32_t instruction_set::logic_not(u_int32_t op1, const char type)
 {
     if ((type & 0xC0) == 0x00)
         return 0;
@@ -363,7 +363,7 @@ u_int32_t Instruction::logic_not(u_int32_t op1, const char type)
     }
 	return 0;
 }
-u_int32_t Instruction::logic_xor(u_int32_t op1, u_int32_t op2, const char type)
+u_int32_t instruction_set::logic_xor(u_int32_t op1, u_int32_t op2, const char type)
 {
     u_int32_t temp = getoperand2value(op2, type);
     if ((type & 0xC0) == 0x00)
@@ -388,7 +388,7 @@ u_int32_t Instruction::logic_xor(u_int32_t op1, u_int32_t op2, const char type)
     }
 	return 0;
 }
-u_int32_t Instruction::logic_or(u_int32_t op1, u_int32_t op2, const char type)
+u_int32_t instruction_set::logic_or(u_int32_t op1, u_int32_t op2, const char type)
 {
     u_int32_t temp = getoperand2value(op2, type);
     if ((type & 0xC0) == 0x00)
@@ -414,7 +414,7 @@ u_int32_t Instruction::logic_or(u_int32_t op1, u_int32_t op2, const char type)
 	return 0;
 }
 
-u_int32_t Instruction::execute(u_int32_t ins)
+u_int32_t instruction_set::execute(u_int32_t ins)
 {
 	if (codesize < (ins + 1) * 10)
 		return 14;
