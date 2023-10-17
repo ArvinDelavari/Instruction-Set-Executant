@@ -18,8 +18,6 @@ class instruction_set
 		u_int32_t decrease(u_int32_t op1, const char type);
 		u_int32_t input(u_int32_t op1, const char type);
 		u_int32_t output(u_int32_t op1, const char type);
-		u_int32_t read(u_int32_t op1, u_int32_t op2); //-
-		u_int32_t write(u_int32_t op1, u_int32_t op2); //-
 		u_int32_t move(u_int32_t op1, u_int32_t op2, const char type);
 		u_int32_t swap(u_int32_t op1, u_int32_t op2); //-
 		u_int32_t logic_and(u_int32_t op1, u_int32_t op2, const char type);
@@ -246,14 +244,6 @@ u_int32_t instruction_set::output(u_int32_t op1, const char type)
     cout << "instruction_set::output" << endl;
     return 0;
 }
-u_int32_t instruction_set::read(u_int32_t op1, u_int32_t op2)
-{
-	return 0;
-}
-u_int32_t instruction_set::write(u_int32_t op1, u_int32_t op2)
-{
-	return 0;
-}
 u_int32_t instruction_set::move(u_int32_t op1, u_int32_t op2, const char type)
 {
     u_int32_t temp = getoperand2value(op2, type);
@@ -417,12 +407,6 @@ u_int32_t instruction_set::execute(u_int32_t ins)
 			break;
 		case 23:
 			output(operand1, prefix);
-			break;
-		case 24:
-			read(operand1, prefix);
-			break;
-		case 25:
-			write(operand1, operand2);
 			break;
 		case 26:
 			move(operand1, operand2, prefix);
