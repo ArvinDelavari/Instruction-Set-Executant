@@ -1,2 +1,2 @@
-# CPP-Basic-Instruction-Set
+# C++ Basic Instruction Set
 C++ basic behavioral instruction set simulator
