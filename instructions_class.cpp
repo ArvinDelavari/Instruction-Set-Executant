@@ -19,7 +19,7 @@ class instruction_set
 		u_int32_t input(u_int32_t op1, const char type);
 		u_int32_t output(u_int32_t op1, const char type);
 		u_int32_t move(u_int32_t op1, u_int32_t op2, const char type);
-		u_int32_t swap(u_int32_t op1, u_int32_t op2); //-
+		u_int32_t swap(u_int32_t op1, u_int32_t op2); // IN PROGRESS
 		u_int32_t logic_and(u_int32_t op1, u_int32_t op2, const char type);
 		u_int32_t logic_not(u_int32_t op1, const char type);
 		u_int32_t logic_xor(u_int32_t op1, u_int32_t op2, const char type);
