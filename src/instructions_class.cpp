@@ -1,16 +1,47 @@
 #include <stdio.h>
+#include <fstream>
+#include <iostream>
+
+u_int32_t readcode(char* code, const char* codefile, const u_int32_t size)
+{
+    std::ifstream file(codefile, std::ios::binary);
+    if (!file)
+    {
+        std::cerr << "Failed to open code file: " << codefile << std::endl;
+        return 0;
+    }
+    // Read code from the file
+    file.read(code, size);
+    if (!file)
+    {
+        std::cerr << "Failed to read code from file: " << codefile << std::endl;
+        return 0;
+    }
+    // Get the number of bytes read
+    const u_int32_t bytesRead = static_cast<u_int32_t>(file.gcount());
+    // Close the file
+    file.close();
+    return bytesRead;
+}
 
 class instruction_set
 {
 	private:
-		u_int32_t stack[MMS];
-		u_int32_t main_memory[MMS];
-		u_int32_t p[4];
-		u_int32_t r[8];
-		u_int32_t ip, flags, sp;
-		char code[MCS];
-		u_int32_t codesize;
-	public:
+    u_int32_t stack[MMS];               // Stack memory
+    u_int32_t main_memory[MMS];         // Main memory
+    u_int32_t p[4];                     // Pointers
+    u_int32_t r[8];                     // Registers
+    u_int32_t ip, flags, sp;            // Instruction pointer, flags, stack pointer
+    char code[MCS];                     // Code buffer
+    u_int32_t codesize;                 // Code size
+
+    public:
+    instruction_set(void);                          // Constructor
+    u_int32_t loadcode(char* codefile);             // Load code from file
+    u_int32_t getoperand1value(u_int32_t op1, const char type);   // Get value of operand 1
+    u_int32_t getoperand2value(u_int32_t op2, const char type);   // Get value of operand 2
+
+    // Instruction functions
 		u_int32_t jump(u_int32_t op1, const char type);
 		u_int32_t jumpzero(u_int32_t op1, const char type);
 		u_int32_t compare(u_int32_t op1, u_int32_t op2, const char type);
@@ -19,17 +50,19 @@ class instruction_set
 		u_int32_t input(u_int32_t op1, const char type);
 		u_int32_t output(u_int32_t op1, const char type);
 		u_int32_t move(u_int32_t op1, u_int32_t op2, const char type);
-		u_int32_t swap(u_int32_t op1, u_int32_t op2); // IN PROGRESS
+		u_int32_t swap(u_int32_t op1, u_int32_t op2);
 		u_int32_t logic_and(u_int32_t op1, u_int32_t op2, const char type);
 		u_int32_t logic_not(u_int32_t op1, const char type);
 		u_int32_t logic_xor(u_int32_t op1, u_int32_t op2, const char type);
 		u_int32_t logic_or(u_int32_t op1, u_int32_t op2, const char type);
+
 		instruction_set(void);
 		u_int32_t loadcode(char* codefile);
 		u_int32_t execute(u_int32_t ins);
         u_int32_t getoperand2value(u_int32_t op2, const char type);
         u_int32_t getoperand1value(u_int32_t op2, const char type);
 };
+
 instruction_set::instruction_set(void)
 {
 	fill(stack, stack + MSS, 0);
@@ -275,7 +308,14 @@ u_int32_t instruction_set::move(u_int32_t op1, u_int32_t op2, const char type)
 }
 u_int32_t instruction_set::swap(u_int32_t op1, u_int32_t op2)
 {
-	return 0;
+    if (op1 >= 8 || op2 >= 8)
+        return 14;
+
+    u_int32_t temp = r[op1];
+    r[op1] = r[op2];
+    r[op2] = temp;
+
+    return 0;
 }
 u_int32_t instruction_set::logic_and(u_int32_t op1, u_int32_t op2, const char type)
 {
