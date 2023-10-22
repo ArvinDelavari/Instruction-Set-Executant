@@ -27,8 +27,8 @@ u_int32_t readcode(char* code, const char* codefile, const u_int32_t size)
 class instruction_set
 {
 	private:
-    u_int32_t stack[MMS];               // Stack memory
-    u_int32_t main_memory[MMS];         // Main memory
+    u_int32_t stack[MMS];               // Stack memory : MMS = Main Memory Size
+    u_int32_t main_memory[MMS];         // Main  memory : MMS = Main Memory Size
     u_int32_t p[4];                     // Pointers
     u_int32_t r[8];                     // Registers
     u_int32_t ip, flags, sp;            // Instruction pointer, flags, stack pointer
