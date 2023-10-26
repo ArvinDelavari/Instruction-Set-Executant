@@ -37,30 +37,30 @@ class instruction_set
 
     public:
     instruction_set(void);                          // Constructor
-    u_int32_t loadcode(char* codefile);             // Load code from file
-    u_int32_t getoperand1value(u_int32_t op1, const char type);   // Get value of operand 1
-    u_int32_t getoperand2value(u_int32_t op2, const char type);   // Get value of operand 2
+    u_int32_t load_code(char* codefile);             // Load code from file
+    u_int32_t get_operand1_value(u_int32_t operand_1, const char type);   // Get value of operand 1
+    u_int32_t get_operand2_value(u_int32_t operand_2, const char type);   // Get value of operand 2
 
     // Instruction functions
-		u_int32_t jump(u_int32_t op1, const char type);
-		u_int32_t jumpzero(u_int32_t op1, const char type);
-		u_int32_t compare(u_int32_t op1, u_int32_t op2, const char type);
-		u_int32_t increase(u_int32_t op1, const char type);
-		u_int32_t decrease(u_int32_t op1, const char type);
-		u_int32_t input(u_int32_t op1, const char type);
-		u_int32_t output(u_int32_t op1, const char type);
-		u_int32_t move(u_int32_t op1, u_int32_t op2, const char type);
-		u_int32_t swap(u_int32_t op1, u_int32_t op2);
-		u_int32_t logic_and(u_int32_t op1, u_int32_t op2, const char type);
-		u_int32_t logic_not(u_int32_t op1, const char type);
-		u_int32_t logic_xor(u_int32_t op1, u_int32_t op2, const char type);
-		u_int32_t logic_or(u_int32_t op1, u_int32_t op2, const char type);
+		u_int32_t jump(u_int32_t operand_1, const char type);
+		u_int32_t jump_zero(u_int32_t operand_1, const char type);
+		u_int32_t compare(u_int32_t operand_1, u_int32_t operand_2, const char type);
+		u_int32_t increase(u_int32_t operand_1, const char type);
+		u_int32_t decrease(u_int32_t operand_1, const char type);
+		u_int32_t input(u_int32_t operand_1, const char type);
+		u_int32_t output(u_int32_t operand_1, const char type);
+		u_int32_t move(u_int32_t operand_1, u_int32_t operand_2, const char type);
+		u_int32_t swap(u_int32_t operand_1, u_int32_t operand_2);
+		u_int32_t logic_and(u_int32_t operand_1, u_int32_t operand_2, const char type);
+		u_int32_t logic_not(u_int32_t operand_1, const char type);
+		u_int32_t logic_xor(u_int32_t operand_1, u_int32_t operand_2, const char type);
+		u_int32_t logic_or(u_int32_t operand_1, u_int32_t operand_2, const char type);
 
 		instruction_set(void);
-		u_int32_t loadcode(char* codefile);
+		u_int32_t load_code(char* codefile);
 		u_int32_t execute(u_int32_t ins);
-        u_int32_t getoperand2value(u_int32_t op2, const char type);
-        u_int32_t getoperand1value(u_int32_t op2, const char type);
+        u_int32_t get_operand1_value(u_int32_t operand_1, const char type);
+        u_int32_t get_operand2_value(u_int32_t operand_2, const char type);
 };
 
 instruction_set::instruction_set(void)
@@ -71,61 +71,61 @@ instruction_set::instruction_set(void)
 	sp = 0;
 	flags = 0;
 }
-u_int32_t instruction_set::loadcode(char* codefile)
+u_int32_t instruction_set::load_code(char* codefile)
 {
 	codesize = readcode(code, codefile, MCS);
     return codesize;
 }
-u_int32_t instruction_set::getoperand1value(u_int32_t op1, const char type)
+u_int32_t instruction_set::get_operand1_value(u_int32_t operand_1, const char type)
 {
     u_int32_t temp;
     if ((type & 0xC0) == 0x00)
         return 0;
     if ((type & 0xC0) == 0x40)
     {
-        if (op1 > MMS)
+        if (operand_1 > MMS)
             return 14;
-        temp = main_memory[op1];
+        temp = main_memory[operand_1];
     }
     if ((type & 0xC0) == 0x80)
-        temp = op1;
+        temp = operand_1;
     if ((type & 0xC0) == 0xC0)
     {
-        if (op1 < 8)
-            temp = r[op1];
+        if (operand_1 < 8)
+            temp = r[operand_1];
         else
-        if (op1 < 10)
-            temp = main_memory[p[op1 - 8]];
+        if (operand_1 < 10)
+            temp = main_memory[p[operand_1 - 8]];
         else
-        if (op1 == 15)
+        if (operand_1 == 15)
             temp = sp;
         else
             return 14;
     }
     return temp;
 }
-u_int32_t instruction_set::getoperand2value(u_int32_t op2, const char type)
+u_int32_t instruction_set::get_operand2_value(u_int32_t operand_2, const char type)
 {
     u_int32_t temp;
     if ((type & 0x30) == 0x00)
         return 0;
     if ((type & 0x30) == 0x10)
     {
-        if (op2 > MMS)
+        if (operand_2 > MMS)
             return 14;
-        temp = main_memory[op2];
+        temp = main_memory[operand_2];
     }
     if ((type & 0x30) == 0x20)
-        temp = op2;
+        temp = operand_2;
     if ((type & 0x30) == 0x30)
     {
-        if (op2 < 8)
-            temp = r[op2];
+        if (operand_2 < 8)
+            temp = r[operand_2];
         else
-        if (op2 < 10)
-            temp = main_memory[p[op2 - 8]];
+        if (operand_2 < 10)
+            temp = main_memory[p[operand_2 - 8]];
         else
-        if (op2 == 15)
+        if (operand_2 == 15)
             temp = sp;
         else
             return 14;
@@ -133,7 +133,7 @@ u_int32_t instruction_set::getoperand2value(u_int32_t op2, const char type)
     return temp;
 }
 
-u_int32_t instruction_set::jump(u_int32_t op1, const char type)
+u_int32_t instruction_set::jump(u_int32_t operand_1, const char type)
 {
     if ((type & 0x0C) == 0x00)
         return 0;
@@ -141,71 +141,71 @@ u_int32_t instruction_set::jump(u_int32_t op1, const char type)
         return 14;
     if ((type & 0x0C) == 0x80)
     {
-        if ((op1 + 1) * 10 > codesize)
+        if ((operand_1 + 1) * 10 > codesize)
             return 14;
-        ip = op1;
+        ip = operand_1;
     }
     if ((type & 0x0C) == 0xC0)
         return 14;
 	return 0;
 }
-u_int32_t instruction_set::jumpzero(u_int32_t op1, const char type)
+u_int32_t instruction_set::jump_zero(u_int32_t operand_1, const char type)
 {
     if (((type & 0x03) ^ (flags & 0x03)) == 0)
-        return jump(op1, type);
+        return jump(operand_1, type);
 	return 0;
 }
-u_int32_t instruction_set::compare(u_int32_t op1, u_int32_t op2, const char type)
+u_int32_t instruction_set::compare(u_int32_t operand_1, u_int32_t operand_2, const char type)
 {
-    op1 = getoperand1value(op1, type);
-    op2 = getoperand2value(op2, type);
-    if (op1 > op2)
+    operand_1 = get_operand1_value(operand_1, type);
+    operand_2 = get_operand2_value(operand_2, type);
+    if (operand_1 > operand_2)
         flags |= 0x02;
     else
         flags &= 0xFFFFFFFD;
-    if (op1 < op2)
+    if (operand_1 < operand_2)
         flags |= 0x01;
     else
         flags &= 0xFFFFFFFE;
 	return 0;
 }
-u_int32_t instruction_set::increase(u_int32_t op1, const char type)
+u_int32_t instruction_set::increase(u_int32_t operand_1, const char type)
 {
     if ((type & 0xC0) == 0x00)
         return 0;
     if ((type & 0xC0) == 0x40)
     {
-        if (op1 > MMS)
+        if (operand_1 > MMS)
             return 14;
-        main_memory[op1]++;
+        main_memory[operand_1]++;
     }
     if ((type & 0xC0) == 0x80)
        return 0;
     if ((type & 0xC0) == 0xC0)
     {
-        if (op1 < 8)
-            r[op1]++;
+        if (operand_1 < 8)
+            r[operand_1]++;
         else
-        if (op1 < 10)
-            main_memory[p[op1 - 8]]++;
+        if (operand_1 < 10)
+            main_memory[p[operand_1 - 8]]++;
         else
-        if (op1 == 15)
+        if (operand_1 == 15)
             sp++;
         else
             return 14;
     }
-    cout << "instruction_set::increase(" << main_memory[op1] << ")" << endl;
+    cout << "instruction_set::increase(" << main_memory[operand_1] << ")" << endl;
     return 0;
 }
-u_int32_t instruction_set::decrease(u_int32_t op1, const char type)
+u_int32_t instruction_set::decrease(u_int32_t operand_1, const char type)
 {
     if ((type & 0xC0) == 0x00)
           return 0;
     if ((type & 0xC0) == 0x40)
     {
-        if (op1 > MMS)
+        if (operand_1 > MMS)
             return 14;
-        main_memory[op1]--;
+        main_memory[operand_1]--;
     }
     if ((type & 0xC0) == 0x80)
     {
@@ -213,204 +213,204 @@ u_int32_t instruction_set::decrease(u_int32_t op1, const char type)
     }
     if ((type & 0xC0) == 0xC0)
     {
-        if (op1 < 8)
-            r[op1]--;
+        if (operand_1 < 8)
+            r[operand_1]--;
         else
-        if (op1 < 10)
-            main_memory[p[op1 - 8]]--;
+        if (operand_1 < 10)
+            main_memory[p[operand_1 - 8]]--;
         else
-        if (op1 == 15)
+        if (operand_1 == 15)
             sp--;
         else
             return 14;
     }
-    cout << "instruction_set::decrease(" << main_memory[op1] << ")" << endl;
+    cout << "instruction_set::decrease(" << main_memory[operand_1] << ")" << endl;
 	return 0;
 }
-u_int32_t instruction_set::input(u_int32_t op1, const char type)
+u_int32_t instruction_set::input(u_int32_t operand_1, const char type)
 {
     if ((type & 0xC0) == 0x00)
         return 0;
     if ((type & 0xC0) == 0x40)
     {
-        if (op1 > MMS)
+        if (operand_1 > MMS)
             return 14;
-        cin >> main_memory[op1];
+        cin >> main_memory[operand_1];
     }
     if ((type & 0xC0) == 0x80)
        return 0;
     if ((type & 0xC0) == 0xC0)
     {
-        if (op1 < 8)
-            cin >> r[op1];
+        if (operand_1 < 8)
+            cin >> r[operand_1];
         else
-        if (op1 < 10)
-            cin >> main_memory[p[op1 - 8]];
+        if (operand_1 < 10)
+            cin >> main_memory[p[operand_1 - 8]];
         else
             return 14;
     }
     cout << "instruction_set::input" << endl;
     return 0;
 }
-u_int32_t instruction_set::output(u_int32_t op1, const char type)
+u_int32_t instruction_set::output(u_int32_t operand_1, const char type)
 {
     if ((type & 0xC0) == 0x00)
         return 0;
     if ((type & 0xC0) == 0x40)
     {
-        if (op1 > MMS)
+        if (operand_1 > MMS)
             return 14;
-        cout << main_memory[op1];
+        cout << main_memory[operand_1];
     }
     if ((type & 0xC0) == 0x80)
        return 0;
     if ((type & 0xC0) == 0xC0)
     {
-        if (op1 < 8)
-            cout << r[op1];
+        if (operand_1 < 8)
+            cout << r[operand_1];
         else
-        if (op1 < 10)
-            cout << main_memory[p[op1 - 8]];
+        if (operand_1 < 10)
+            cout << main_memory[p[operand_1 - 8]];
         else
             return 14;
     }
     cout << "instruction_set::output" << endl;
     return 0;
 }
-u_int32_t instruction_set::move(u_int32_t op1, u_int32_t op2, const char type)
+u_int32_t instruction_set::move(u_int32_t operand_1, u_int32_t operand_2, const char type)
 {
-    u_int32_t temp = getoperand2value(op2, type);
+    u_int32_t temp = get_operand2_value(operand_2, type);
 
     if ((type & 0xC0) == 0x00)
         return 0;
     if ((type & 0xC0) == 0x40)
     {
-        if (op1 > MMS)
+        if (operand_1 > MMS)
             return 14;
-        op1 = temp;
+        operand_1 = temp;
     }
     if ((type & 0xC0) == 0x80)
         return 14;
     if ((type & 0xC0) == 0xC0)
     {
-        if (op1 < 8)
-            r[op1] = temp;
+        if (operand_1 < 8)
+            r[operand_1] = temp;
         else
-        if (op1 < 10)
-            main_memory[p[op1 - 8]] = temp;
+        if (operand_1 < 10)
+            main_memory[p[operand_1 - 8]] = temp;
         else
-        if (op1 == 15)
+        if (operand_1 == 15)
             sp = temp;
         else
             return 14;
     }
 	return 0;
 }
-u_int32_t instruction_set::swap(u_int32_t op1, u_int32_t op2)
+u_int32_t instruction_set::swap(u_int32_t operand_1, u_int32_t operand_2)
 {
-    if (op1 >= 8 || op2 >= 8)
+    if (operand_1 >= 8 || operand_2 >= 8)
         return 14;
 
-    u_int32_t temp = r[op1];
-    r[op1] = r[op2];
-    r[op2] = temp;
+    u_int32_t temp = r[operand_1];
+    r[operand_1] = r[operand_2];
+    r[operand_2] = temp;
 
     return 0;
 }
-u_int32_t instruction_set::logic_and(u_int32_t op1, u_int32_t op2, const char type)
+u_int32_t instruction_set::logic_and(u_int32_t operand_1, u_int32_t operand_2, const char type)
 {
-    u_int32_t temp = getoperand2value(op2, type);
+    u_int32_t temp = get_operand2_value(operand_2, type);
     if ((type & 0xC0) == 0x00)
         return 0;
     if ((type & 0xC0) == 0x40)
     {
-        if (op1 > MMS)
+        if (operand_1 > MMS)
             return 14;
-        op1 &= temp;
+        operand_1 &= temp;
     }
     if ((type & 0xC0) == 0x80)
         return 14;
     if ((type & 0xC0) == 0xC0)
     {
-        if (op1 < 8)
-            r[op1] &= temp;
+        if (operand_1 < 8)
+            r[operand_1] &= temp;
         else
-        if (op1 < 10)
-            main_memory[p[op1 - 8]] &= temp;
+        if (operand_1 < 10)
+            main_memory[p[operand_1 - 8]] &= temp;
         else
             return 14;
     }
 	return 0;
 }
-u_int32_t instruction_set::logic_not(u_int32_t op1, const char type)
+u_int32_t instruction_set::logic_not(u_int32_t operand_1, const char type)
 {
     if ((type & 0xC0) == 0x00)
         return 0;
     if ((type & 0xC0) == 0x40)
     {
-        if (op1 > MMS)
+        if (operand_1 > MMS)
             return 14;
-        op1 = ~op1;
+        operand_1 = ~operand_1;
     }
     if ((type & 0xC0) == 0x80)
         return 14;
     if ((type & 0xC0) == 0xC0)
     {
-        if (op1 < 8)
-            r[op1] = ~r[op1];
+        if (operand_1 < 8)
+            r[operand_1] = ~r[operand_1];
         else
-        if (op1 < 10)
-            main_memory[p[op1 - 8]] = ~main_memory[p[op1 - 8]];
+        if (operand_1 < 10)
+            main_memory[p[operand_1 - 8]] = ~main_memory[p[operand_1 - 8]];
         else
             return 14;
     }
 	return 0;
 }
-u_int32_t instruction_set::logic_xor(u_int32_t op1, u_int32_t op2, const char type)
+u_int32_t instruction_set::logic_xor(u_int32_t operand_1, u_int32_t operand_2, const char type)
 {
-    u_int32_t temp = getoperand2value(op2, type);
+    u_int32_t temp = get_operand2_value(operand_2, type);
     if ((type & 0xC0) == 0x00)
         return 0;
     if ((type & 0xC0) == 0x40)
     {
-        if (op1 > MMS)
+        if (operand_1 > MMS)
             return 14;
-        op1 ^= temp;
+        operand_1 ^= temp;
     }
     if ((type & 0xC0) == 0x80)
         return 14;
     if ((type & 0xC0) == 0xC0)
     {
-        if (op1 < 8)
-            r[op1] ^= temp;
+        if (operand_1 < 8)
+            r[operand_1] ^= temp;
         else
-        if (op1 < 10)
-            main_memory[p[op1 - 8]] ^= temp;
+        if (operand_1 < 10)
+            main_memory[p[operand_1 - 8]] ^= temp;
         else
             return 14;
     }
 	return 0;
 }
-u_int32_t instruction_set::logic_or(u_int32_t op1, u_int32_t op2, const char type)
+u_int32_t instruction_set::logic_or(u_int32_t operand_1, u_int32_t operand_2, const char type)
 {
-    u_int32_t temp = getoperand2value(op2, type);
+    u_int32_t temp = get_operand2_value(operand_2, type);
     if ((type & 0xC0) == 0x00)
         return 0;
     if ((type & 0xC0) == 0x40)
     {
-        if (op1 > MMS)
+        if (operand_1 > MMS)
             return 14;
-        op1 |= temp;
+        operand_1 |= temp;
     }
     if ((type & 0xC0) == 0x80)
         return 14;
     if ((type & 0xC0) == 0xC0)
     {
-        if (op1 < 8)
-            r[op1] |= temp;
+        if (operand_1 < 8)
+            r[operand_1] |= temp;
         else
-        if (op1 < 10)
-            main_memory[p[op1 - 8]] |= temp;
+        if (operand_1 < 10)
+            main_memory[p[operand_1 - 8]] |= temp;
         else
             return 14;
     }
@@ -431,7 +431,7 @@ u_int32_t instruction_set::execute(u_int32_t ins)
 			jump(operand1, prefix);
 			break;
 		case 17:
-			jumpzero(operand1, prefix);
+			jump_zero(operand1, prefix);
 			break;
 		case 19:
 			compare(operand1, operand2, prefix);
