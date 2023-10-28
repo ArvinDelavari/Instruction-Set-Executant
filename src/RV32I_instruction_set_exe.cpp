@@ -10,8 +10,39 @@
 #define JALR   0x67
 #define LUI    0x37
 #define AUIPC  0x17
+#define SYSTEM_OPCODE 0x73
+
+// CSR instructions
+#define CSRRW 0x1
+#define CSRRS 0x2
+#define CSRRC 0x3
+#define CSRRWI 0x5
+#define CSRRSI 0x6
+#define CSRRCI 0x7
+
+// CSR registers
+#define CSR_MSTATUS 0x300
+#define CSR_MIE 0x304
+#define CSR_MTVEC 0x305
+#define CSR_MSCRATCH 0x340
+#define CSR_MEPC 0x341
+#define CSR_MCAUSE 0x342
+#define CSR_MTVAL 0x343
+#define CSR_MIP 0x344
 
 int32_t registers[32]; // 32 general-purpose registers
+
+std::unordered_map<uint32_t, uint32_t> csr_registers;
+uint32_t read_csr(uint32_t csr_addr) 
+{
+    if (csr_registers.count(csr_addr) == 0)
+        return 0; // Return 0 if the CSR register is not found
+    return csr_registers[csr_addr];
+}
+void write_csr(uint32_t csr_addr, uint32_t value)
+{
+    csr_registers[csr_addr] = value;
+}
 
 void execute_instruction(uint32_t instruction) 
 {
@@ -84,7 +115,6 @@ void execute_instruction(uint32_t instruction)
             else
                 std::cout << "Unsupported instruction: " << std::hex << instr << std::endl;
             break;
-
         case R_TYPE:
             if (funct3 == 0x6 && funct7 == 0x0) // OR
                 registers[rd] = registers[rs1] | registers[rs2];
@@ -112,6 +142,77 @@ void execute_instruction(uint32_t instruction)
             else
                 std::cout << "Unsupported instruction: " << std::hex << instr << std::endl;
             break;
+         case SYSTEM_OPCODE:
+            switch (funct3) 
+            {
+                case CSRRW: 
+                {
+                    uint32_t csr_addr = imm_i;
+                    uint32_t rs1_value = registers[rs1];
+
+                    uint32_t old_value = read_csr(csr_addr);
+                    write_csr(csr_addr, rs1_value);
+                    registers[rd] = old_value;
+                    break;
+                }
+                case CSRRS: 
+                {
+                    uint32_t csr_addr = imm_i;
+                    uint32_t rs1_value = registers[rs1];
+
+                    uint32_t old_value = read_csr(csr_addr);
+                    uint32_t new_value = old_value | rs1_value;
+                    write_csr(csr_addr, new_value);
+                    registers[rd] = old_value;
+                    break;
+                }
+                case CSRRC: 
+                {
+                    uint32_t csr_addr = imm_i;
+                    uint32_t rs1_value = registers[rs1];
+
+                    uint32_t old_value = read_csr(csr_addr);
+                    uint32_t new_value = old_value & (~rs1_value);
+                    write_csr(csr_addr, new_value);
+                    registers[rd] = old_value;
+                    break;
+                }
+                case CSRRWI: 
+                {
+                    uint32_t csr_addr = imm_i;
+                    uint32_t zimm = rs1;
+
+                    uint32_t old_value = read_csr(csr_addr);
+                    write_csr(csr_addr, zimm);
+                    registers[rd] = old_value;
+                    break;
+                }
+                case CSRRSI: 
+                {
+                    uint32_t csr_addr = imm_i;
+                    uint32_t zimm = rs1;
+
+                    uint32_t old_value = read_csr(csr_addr);
+                    uint32_t new_value = old_value | zimm;
+                    write_csr(csr_addr, new_value);
+                    registers[rd] = old_value;
+                    break;
+                }
+                case CSRRCI: 
+                {
+                    uint32_t csr_addr = imm_i;
+                    uint32_t zimm = rs1;
+
+                    uint32_t old_value = read_csr(csr_addr);
+                    uint32_t new_value = old_value & (~zimm);
+                    write_csr(csr_addr, new_value);
+                    registers[rd] = old_value;
+                    break;
+                }
+                default:
+                    std::cout << "Unsupported instruction: " << std::hex << instruction << std::endl;
+                    break;
+            }
         default:
             std::cout << "Unsupported instruction: " << std::hex << instruction << std::endl;
             break;
