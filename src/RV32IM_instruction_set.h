@@ -1,5 +1,5 @@
-#ifndef RV32I_INSTRUCTION_SET_H
-#define RV32I_INSTRUCTION_SET_H
+#ifndef RV32IM_INSTRUCTION_SET_H
+#define RV32IM_INSTRUCTION_SET_H
 
 #include <iostream>
 #include <cstdint>
@@ -34,10 +34,10 @@
 #define CSR_MTVAL    0x343
 #define CSR_MIP      0x344
 
-class RV32I_INSTRUCTION_SET 
+class RV32IM_INSTRUCTION_SET 
 {
 public:
-    RV32I_INSTRUCTION_SET();
+    RV32IM_INSTRUCTION_SET();
     void execute_instruction(uint32_t instruction);
 
 private:
@@ -49,4 +49,4 @@ private:
     int32_t sign_extend(uint32_t imm, uint32_t size);
 };
 
-#endif  // RV32I_INSTRUCTION_SET_H
+#endif  // RV32IM_INSTRUCTION_SET_H

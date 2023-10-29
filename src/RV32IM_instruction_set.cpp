@@ -1,4 +1,4 @@
-#include <RV32I_instruction_set.h>
+#include <RV32IM_instruction_set.h>
 
 int32_t registers[32]; // 32 general-purpose registers
 
@@ -48,13 +48,29 @@ void execute_instruction(uint32_t instruction)
             registers[rd] = registers[rs1] + imm_i;
             break;
         case R_TYPE:
-            if (funct3 == 0x0 && funct7 == 0x0)                     // ADD
+            if (funct3 == 0x0 && funct7 == 0x0)         // ADD
                 registers[rd] = registers[rs1] + registers[rs2];
-            else if (funct3 == 0x0 && funct7 == 0x20)               // SUB
+            else if (funct3 == 0x0 && funct7 == 0x20)   // SUB
                 registers[rd] = registers[rs1] - registers[rs2];
+            else if (funct3 == 0x1 && funct7 == 0x0)    // MUL
+                registers[rd] = registers[rs1] * registers[rs2];
+            else if (funct3 == 0x1 && funct7 == 0x1)    // MULH
+                registers[rd] = (int32_t)(((int64_t)registers[rs1] * (int64_t)registers[rs2]) >> 32);
+            else if (funct3 == 0x1 && funct7 == 0x2)    // MULHSU
+                registers[rd] = (int32_t)(((int64_t)registers[rs1] * (uint64_t)registers[rs2]) >> 32);
+            else if (funct3 == 0x1 && funct7 == 0x3)    // MULHU
+                registers[rd] = (int32_t)(((uint64_t)registers[rs1] * (uint64_t)registers[rs2]) >> 32);
+            else if (funct3 == 0x1 && funct7 == 0x4)    // DIV
+                registers[rd] = (registers[rs2] == 0) ? -1 : (registers[rs1] / registers[rs2]);
+            else if (funct3 == 0x1 && funct7 == 0x5)    // DIVU
+                registers[rd] = (registers[rs2] == 0) ? -1 : ((uint32_t)registers[rs1] / (uint32_t)registers[rs2]);
+            else if (funct3 == 0x2 && funct7 == 0x0)    // REM
+                registers[rd] = (registers[rs2] == 0) ? registers[rs1] : (registers[rs1] % registers[rs2]);
+            else if (funct3 == 0x2 && funct7 == 0x1)    // REMU
+                registers[rd] = (registers[rs2] == 0) ? registers[rs1] : ((uint32_t)registers[rs1] % (uint32_t)registers[rs2]);
             else
                 std::cout << "Unsupported instruction: " << std::hex << instruction << std::endl;
-            break;
+                break;
         case LBU:
             registers[rd] = (int8_t)(registers[rs1] + imm_i);
             break;
