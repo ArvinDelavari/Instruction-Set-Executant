@@ -11,12 +11,10 @@ This code is a C++ class called `instruction_set` that defines a set of methods 
 - The class `instruction_set` is defined with private member variables, including arrays `stack`, `main_memory`, `p`, `r`, and `code`, as well as scalar variables `ip`, `flags`, `sp`, and `codesize`.
 - The public section of the class contains several method declarations, including `jump`, `compare`, `input`, `output`, `move`, `logic_and`, `logic_not`, `logic_xor`, `logic_or` and etc. These methods perform various operations on operands and modify the state of the instruction execution.
 
-> [!Note]\
-> Please be aware that the code provided in this repository is designed for educational purpose and should not be considered suitable for professional applications. It is only offering examples and demonstrations of fundamental concepts. It is crucial to understand that this code may not meet the particular standards expected in a professional setting. Therefore, it is strongly advised to modify and enhance the code appropriately before utilizing it in any production or professional environment.
 
 ## RV32IM Instruction Set Executant 
 
-This code repository contains an implementation of a simple RISC-V processor (Instruction Set Executant). The processor executes instructions from the `RV32IM` instruction set architecture. The `src` directory of this repository includes functions for reading and writing control and status registers (CSRs), as well as executing various instructions such as arithmetic operations, memory operations, branches, jumps, and system instructions.
+This repository also contains an implementation of a simple RISC-V Instruction Set Executant class in C++. The processor executes instructions from the `RV32IM` instruction set architecture. The `src/RV32IM_instruction_set.h` directory of this repository includes functions for reading and writing control and status registers (CSRs), as well as executing various instructions such as arithmetic operations, memory operations, branches, jumps, and system instructions.
 
 The main components of the code are:
 - Declaration and initialization of registers: The code declares an array of 32 general-purpose registers and an unordered map for CSR registers.
@@ -26,6 +24,8 @@ The main components of the code are:
 
 Overall, this code provides a basic implementation of a RISC-V processor that can execute a subset of the `RV32IM` instruction set.
 
+> [!Note]\
+> Please be aware that the codes provided in this repository is designed for educational purpose and should not be considered suitable for professional applications. It is only offering examples and demonstrations of fundamental concepts. It is crucial to understand that this code may not meet the particular standards expected in a professional setting. Therefore, it is strongly advised to modify and enhance the code appropriately before utilizing it in any production or professional environment.
 
 This repository contains an open-source code under the [MIT license](https://opensource.org/license/mit/) and is free to use.
 
